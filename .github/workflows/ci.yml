@@ -1,0 +1,49 @@
+# The workflow is disabled in the repository settings (gh workflow disable CI);
+# re-enable it with `gh workflow enable CI`.
+#
+# Offline checks only. The live write suites in tests_live/ are never run
+# here: they skip unless FRESHWORKS_LIVE_WRITE=1, and CI has no credentials.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install
+        run: python -m pip install -e . coverage==7.16.2
+      - name: Unit tests with full line and branch coverage
+        run: |
+          python -m coverage run --branch --source=freshsales_cli,freshservice_cli \
+            -m unittest discover -s tests -v
+          python -m coverage report --show-missing --fail-under=100
+      - name: Entry points
+        run: |
+          freshsales --version
+          freshservice --version
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: python -m pip install ruff==0.17.3
+      - run: ruff check .
+      - run: ruff format --check .

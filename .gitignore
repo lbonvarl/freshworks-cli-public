@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+build/
+dist/
+.DS_Store
+sample_outputs/
+
+# Local CRM exports in the repo root (never commit raw production data)
+/*.csv
+/*.numbers
+
+# Live write-test ledger (record IDs of test data)
+tests_live/.live-ledger.json

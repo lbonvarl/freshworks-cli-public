@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "freshworks-cli"
+version = "1.1.0"
+description = "Small, read-only-first CLIs for Freshsales CRM and Freshservice"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [{name = "Loic Bonvarlet"}]
+dependencies = []
+
+[project.scripts]
+freshsales = "freshsales_cli.cli:main"
+freshservice = "freshservice_cli.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["freshsales_cli*", "freshservice_cli*"]
